@@ -9,8 +9,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.FileUtils;
 
+import javax.sql.rowset.Joinable;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,10 +66,18 @@ public class MapGroup {
         listMap.add(testMap);
         listMap.add(testMap2);
 
-        listMap.stream().map()
+        Map maps = listMap.stream().collect(groupingBy(map -> {
+            List<String> keyList = new ArrayList<>();
+            Iterator<Map.Entry<String, Map<String, Double>>> iterator = ((Map)map).entrySet().iterator();
+            while (iterator.hasNext()){
+                keyList.add(iterator.next().getKey());
+            }
+            return keyList;
+        }, toList()));
 
         System.out.println(JSON.toJSONString(testMap));
         System.out.println(JSON.toJSONString(testMap2));
+        System.out.println(JSON.toJSONString(maps));
 
 //        Map<String, Map> testMap1 = mapList.stream()
 //                .collect(groupingBy(map -> ((String)((Map)map).get("month"))));
