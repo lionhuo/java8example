@@ -3,19 +3,16 @@
  * <p>
  * Created on 2019/3/29.
  */
-package org.hp;
+package org.hp.example;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.FileUtils;
 
-import javax.sql.rowset.Joinable;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 import static java.util.stream.Collectors.groupingBy;
@@ -51,33 +48,25 @@ public class MapGroup {
         MapGroup mg = new MapGroup();
         JSONObject json = mg.getJsonFromResources();
         List<Map<String, String>> mapList = mg.json2List(json);
+//        System.out.println(JSONObject.toJSONString(mapList));
 
         List<Map<String, Map<String, Double>>> listMap = new ArrayList<>();
 
         Map<String, Map<String, Double>> testMap = mapList.stream()
                 .collect(groupingBy(map -> ((String)((Map)map).get("month")),
-                    groupingBy(map -> "hd_transmux", summingDouble(map -> (Double.valueOf((String)((Map)map).get("hd_transcoding")))))//summingDouble(map -> (Double.valueOf((String)((Map)map).get("hd_transmux")))))
+                    groupingBy(map -> "hd_transmux", summingDouble(map -> (Double.valueOf((String)((Map)map).get("hd_transmux")))))//summingDouble(map -> (Double.valueOf((String)((Map)map).get("hd_transmux")))))
                 ));
         Map<String, Map<String, Double>> testMap2 = mapList.stream()
                 .collect(groupingBy(map -> ((String)((Map)map).get("month")),
                         groupingBy(map -> "hd_transcoding", summingDouble(map -> (Double.valueOf((String)((Map)map).get("hd_transcoding")))))//summingDouble(map -> (Double.valueOf((String)((Map)map).get("hd_transmux")))))
                 ));
-
+//
         listMap.add(testMap);
         listMap.add(testMap2);
-
-        Map maps = listMap.stream().collect(groupingBy(map -> {
-            List<String> keyList = new ArrayList<>();
-            Iterator<Map.Entry<String, Map<String, Double>>> iterator = ((Map)map).entrySet().iterator();
-            while (iterator.hasNext()){
-                keyList.add(iterator.next().getKey());
-            }
-            return keyList;
-        }, toList()));
-
+//
         System.out.println(JSON.toJSONString(testMap));
-        System.out.println(JSON.toJSONString(testMap2));
-        System.out.println(JSON.toJSONString(maps));
+//        System.out.println(JSON.toJSONString(testMap2));
+//        System.out.println(JSON.toJSONString(maps));
 
 //        Map<String, Map> testMap1 = mapList.stream()
 //                .collect(groupingBy(map -> ((String)((Map)map).get("month"))));
@@ -86,9 +75,9 @@ public class MapGroup {
 //                .reduce((a, b) -> a + b).getAsDouble();
 //        System.out.println(rvalue);
 
-        mapList.stream().map(map -> map.get("hd_transmux"))
-                .forEach(map -> {
-                    System.out.println(map);
-                });
+//        mapList.stream().map(map -> map.get("hd_transmux"))
+//                .forEach(map -> {
+//                    System.out.println(map);
+//                });
     }
 }
