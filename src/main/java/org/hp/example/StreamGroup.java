@@ -5,10 +5,14 @@
  */
 package org.hp.example;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.hp.constants.Album;
+import org.hp.constants.Artist;
+import org.hp.constants.SampleData;
 
-import java.util.Comparator;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
@@ -42,10 +46,31 @@ public class StreamGroup {
         System.out.println(lname);
     }
 
+    public void findAlbum(List<Album> albumList){
+        albumList.stream().filter(album -> album.getTrackList().size() <= 3).forEach(album -> System.out.println(album.getName()));
+    }
+
+    public void countArtistMembers(List<Artist> artistList){
+        long memberNum = artistList.stream().map(artist -> artist.getMembers().count()).reduce(0L, Long::sum);
+        System.out.println(memberNum);
+        artistList.stream().map(artist -> artist.getMembers())
+                .forEach(memberN -> memberN.map(member -> member.getName()));
+    }
+
     public static void main(String[] args) {
         StreamGroup sg = new StreamGroup();
+        //
         sg.countNameNum();
+        //
         sg.findLongestNameByReduce();
+        //
         sg.findLongestNameByCollect();
+        //
+        List<Album> albumList = Arrays.asList(SampleData.aLoveSupreme, SampleData.manyTrackAlbum, SampleData.sampleShortAlbum);
+        sg.findAlbum(albumList);
+        //
+        List<Artist> artistList = Arrays.asList(SampleData.theBeatles);
+        sg.countArtistMembers(artistList);
+
     }
 }
